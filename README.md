@@ -59,8 +59,8 @@ AI_Genomics/
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/[your-username]/AI_Genomics.git
-cd AI_Genomics
+git clone https://github.com/[your-username]/AI_Genomics.git /home/caom/AI_Genomics
+cd /home/caom/AI_Genomics
 ```
 
 2. Create and activate a conda environment:
