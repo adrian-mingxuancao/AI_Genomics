@@ -78,6 +78,25 @@ pip install -r requirements.txt
 - AlphaFold: Follow setup instructions in `models/alphafold/README.md`
 - GET: Follow setup instructions in `models/get_model/README.md`
 
+## Computational Resources
+
+### GPU Access
+To access GPU resources for model training and inference, use the following SLURM command:
+
+```bash
+srun -p general --pty -t 120:00 --cpus-per-task=32 --mem=64G --gres=gpu:a100:2 /bin/bash
+```
+
+This command requests:
+- Partition: general
+- Time limit: 120 hours
+- CPUs: 32 cores
+- Memory: 64GB
+- GPUs: 2 NVIDIA A100 GPUs
+- Interactive bash session
+
+Note: Adjust the resources (time, CPU, memory, GPU) based on your specific needs.
+
 ## Version Control
 
 This repository uses Git for version control. Important files:
