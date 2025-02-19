@@ -7,12 +7,16 @@ This repository contains the implementation and integration of two powerful geno
 ```
 AI_Genomics/
 ├── models/
-│   ├── get_model/          # GET model implementation
-│   │   ├── data/          # GET-specific data
-│   │   ├── configs/       # Model configurations
-│   │   └── checkpoints/   # Model checkpoints
-│   └── alphafold/         # AlphaFold implementation
-│       ├── data/          # Symbolic link to /net/scratch/caom/alphafold_data
+│   ├── get_model/          # GET model implementation (175MB)
+│   │   ├── tutorials/      # Jupyter notebooks for data processing and model usage
+│   │   │   ├── prepare_pbmc.ipynb     # Data processing tutorial
+│   │   │   ├── finetune_pbmc.ipynb    # Model fine-tuning tutorial
+│   │   │   ├── predict_atac.ipynb     # ATAC prediction demo
+│   │   │   └── pretrain_pbmc.ipynb    # Pre-training tutorial
+│   │   ├── get_model/     # Core model implementation
+│   │   └── env.yml        # Conda environment specification
+│   └── alphafold/         # AlphaFold implementation (34MB)
+│       ├── data/          # Symbolic link to alphafold_data
 │       ├── configs/       # Model configurations
 │       └── checkpoints/   # Model checkpoints
 ├── experiments/
@@ -26,34 +30,27 @@ AI_Genomics/
 ## Model Data Locations
 
 ### AlphaFold Data
-- Location: `/net/scratch/caom/alphafold_data`
-- Contains all generic AlphaFold data including:
-  - Sequence databases
-  - Structure templates
+Required data includes:
+  - Sequence databases (UniRef90, BFD, MGnify)
+  - Structure templates (PDB70)
   - Parameter files
   - Model weights
 
+Note: AlphaFold data setup will be done separately following the official installation guide.
+
 ### GET Model Data
-- Data location: To be determined
-- Required data will be documented once obtained
+The GET model requires the following data preparation steps:
+1. PBMC Data Processing:
+   - Follow the tutorial in `models/get_model/tutorials/prepare_pbmc.ipynb`
+   - Data processing pipeline includes:
+     - Peak sorting (chr1, chr2, chr3 order)
+     - Count matrix preparation
+     - Quality checks (>3M depth recommended)
 
-## Model Implementation Mindmaps
-
-### AlphaFold Implementation
-- Located in `docs/alphafold_mindmap.md`
-- Key components:
-  - Data preprocessing pipeline
-  - Model architecture
-  - Inference pipeline
-  - Result visualization
-
-### GET Implementation
-- Located in `docs/get_mindmap.md`
-- Key components:
-  - Data preprocessing
-  - Model architecture
-  - Training pipeline
-  - Inference pipeline
+2. Model Training Data:
+   - Fine-tuning data: Follow `models/get_model/tutorials/finetune_pbmc.ipynb`
+   - ATAC prediction: Use `models/get_model/tutorials/predict_atac.ipynb`
+   - Pre-training: Reference `models/get_model/tutorials/pretrain_pbmc.ipynb`
 
 ## Setup and Installation
 
@@ -75,8 +72,37 @@ pip install -r requirements.txt
 ```
 
 4. Set up model-specific requirements:
-- AlphaFold: Follow setup instructions in `models/alphafold/README.md`
-- GET: Follow setup instructions in `models/get_model/README.md`
+   - GET Model:
+     ```bash
+     cd models/get_model
+     conda env create -f env.yml
+     conda activate get
+     ```
+   - AlphaFold:
+     ```bash
+     # Create AlphaFold conda environment
+     cd models/alphafold
+     conda create -n alphafold python=3.8
+     conda activate alphafold
+     
+     # Install JAX with CUDA support
+     pip install --upgrade "jax[cuda]" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
+     
+     # Install other dependencies
+     conda install -y -c conda-forge openmm=7.5.1 pdbfixer
+     conda install -y -c bioconda hmmer hhsuite kalign2
+     pip install -r docker/requirements.txt
+     
+     # Download genetic databases and model parameters
+     # (This will be done separately following cluster-specific storage guidelines)
+     ```
+     
+     Note: We use conda environment instead of Docker in the cluster environment for:
+     - Better integration with SLURM job scheduler
+     - Direct access to cluster's optimized CUDA libraries
+     - Improved performance without Docker virtualization
+     - Better resource management
+     - Direct access to cluster storage
 
 ## Computational Resources
 
