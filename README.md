@@ -82,7 +82,7 @@ pip install -r requirements.txt
      ```bash
      # Create AlphaFold conda environment
      cd models/alphafold
-     conda create -n alphafold python=3.8
+     conda create -n alphafold python=3.10
      conda activate alphafold
      
      # Install JAX with CUDA support
